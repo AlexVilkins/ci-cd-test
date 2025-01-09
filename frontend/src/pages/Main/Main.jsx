@@ -17,7 +17,7 @@ export default function Main() {
 
   return (
     <div className={styles.main}>
-      <p>People: dick</p>
+      <p>People: </p>
       {data.map((item) => (
         <div key={item.id}>
           <p>

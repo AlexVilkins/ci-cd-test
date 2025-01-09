@@ -3,8 +3,15 @@ import styles from "./Main.module.scss";
 import { getData } from "../../app/api/getData";
 import { useEffect, useState } from "react";
 
+interface Person {
+  id: string;
+  name: string;
+  age: number;
+  city: string | null;
+}
+
 export default function Main() {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<Person[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -13,7 +20,6 @@ export default function Main() {
     };
     fetchData();
   }, []);
-  // const data = getData();
 
   return (
     <div className={styles.main}>

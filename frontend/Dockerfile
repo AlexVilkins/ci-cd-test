@@ -1,7 +1,7 @@
-# Указываем базовый образ
-FROM node:20 AS builder
+# Используем официальный образ Node.js
+FROM node:20
 
-# Устанавливаем рабочую директорию
+# Устанавливаем рабочую директорию в контейнере
 WORKDIR /app
 
 # Копируем файлы package.json и package-lock.json
@@ -10,24 +10,12 @@ COPY package*.json ./
 # Устанавливаем зависимости
 RUN npm install
 
-# Копируем все остальные файлы проекта
+# Копируем весь код приложения
 COPY . .
 
-# Собираем приложение
 RUN npm run build
 
-# Создаем финальный образ
-FROM node:20 AS production
+# Запускаем приложение в режиме разработки
+CMD ["npm", "run", "preview"]
 
-# Устанавливаем рабочую директорию
-WORKDIR /app
-
-# Копируем только необходимые файлы из сборки
-COPY --from=builder /app/dist ./dist
-COPY package*.json ./
-
-# Устанавливаем только продакшн зависимости
-RUN npm install --only=production
-
-# Указываем команду для запуска приложения
-CMD ["node", "dist/server.js"]
+EXPOSE 5000

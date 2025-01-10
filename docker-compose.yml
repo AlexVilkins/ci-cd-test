@@ -10,3 +10,19 @@ services:
     environment:
       - VITE_APP_API_URL=http://192.168.0.75:8010 # Пример переменной окружения для API
 
+  backend:
+    image: "fastapi"
+    stop_signal: SIGINT
+    stdin_open: true
+    build:
+      context: ./backend
+    command: >
+      sh -c "poetry run python3 -m main"
+    ports:
+      - "8010:8010"
+    restart: always
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "200k"
+        max-file: "10"

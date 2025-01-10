@@ -4,9 +4,9 @@ services:
       context: ./frontend # Путь к директории с вашим фронтенд-приложением
       dockerfile: Dockerfile # Имя Dockerfile
     ports:
-      - "5000:5000" # Пробрасываем порт
+      - "5173:5173" # Пробрасываем порт
     # depends_on:
     #   - backend # Указываем зависимость от бэкенда
     environment:
-      - REACT_APP_API_URL=http://192.168.0.75:8010 # Пример переменной окружения для API
+      - VITE_APP_API_URL=http://192.168.0.75:8010 # Пример переменной окружения для API
 

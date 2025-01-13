@@ -29,11 +29,25 @@ class Settings(BaseSettings):
     def get_reg(self):
         return self.STATIC_REG
 
-    def get_container(self):
+    def get_tg_container(self):
         return self.CONTAINER_TG_NAME
 
     def get_fast_container(self):
         return self.CONTAINER_FAST_NAME
+
+    def get_yt_dlp_options(self):
+        return {
+            'outtmpl': f'{self.PWD}/media/%(title)s.%(ext)s',
+            'cookiefile': 'cookies.txt',
+            'format': 'bestvideo[height=720][ext=mp4]+bestaudio',
+            'merge_output_format': 'mp4',
+            'progress_hooks': [],
+            'quiet': True,
+            "ffmpeg_location": "/usr/bin/ffmpeg",
+            "noprogress": True
+        }
+
+
 
 
 base_settings = Settings(_env_file=".env_dev", _env_file_encoding="utf-8")

@@ -1,6 +1,7 @@
 import styles from "./Main.module.scss";
 
 import { getData } from "../../app/api/getData";
+import MainPanel from "@widgets/ui/MainPanel/MainPanel";
 import { useEffect, useState } from "react";
 
 interface Person {
@@ -23,14 +24,15 @@ export default function Main() {
 
   return (
     <div className={styles.main}>
-      <p>People: </p>
+      {/* <p>People: </p>
       {data.map((item) => (
         <div key={item.id}>
           <p>
             {item.name} {item.age} {item.city}
           </p>
         </div>
-      ))}
+      ))} */}
+      <MainPanel />
     </div>
   );
 }

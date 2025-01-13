@@ -33,8 +33,6 @@ class AsyncQueue:
         while True:
             if not self.queue.empty():
                 item = self.queue._queue[0]
-                print("start work with")
-                print(self.queue.qsize())
                 await self.work(item)
                 await self.queue.get()
                 self.queue.task_done()

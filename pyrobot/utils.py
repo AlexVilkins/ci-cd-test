@@ -22,7 +22,7 @@ class ProgressTracker:
         if d['status'] == 'downloading':
             percent = d['downloaded_bytes'] / d['total_bytes'] * 100 if d['total_bytes'] else 0
 
-            if percent - self.last_percent >= 3:
+            if percent - self.last_percent >= 5:
 
                 percent = round(percent)
                 self.stub.SendMessage(message_pb2.Message(text=f"{percent}",

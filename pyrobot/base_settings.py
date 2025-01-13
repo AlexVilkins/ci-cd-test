@@ -8,7 +8,8 @@ class Settings(BaseSettings):
     PWD: str
     STATIC_STATUS: str
     STATIC_REG: str
-    CONTAINER_NAME: str
+    CONTAINER_TG_NAME: str
+    CONTAINER_FAST_NAME: str
 
     def get_id(self):
         return self.API_ID
@@ -29,8 +30,10 @@ class Settings(BaseSettings):
         return self.STATIC_REG
 
     def get_container(self):
-        return self.CONTAINER_NAME
+        return self.CONTAINER_TG_NAME
 
+    def get_fast_container(self):
+        return self.CONTAINER_FAST_NAME
 
 
 base_settings = Settings(_env_file=".env_dev", _env_file_encoding="utf-8")

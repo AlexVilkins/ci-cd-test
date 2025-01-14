@@ -1,10 +1,14 @@
+import asyncio
 import logging
+from contextlib import asynccontextmanager
 
 import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from router.user_router import router as user_router
+from grpc_utils.client import ClientGrpc
+from user.user_router import router as user_router
+from youtube.youtube_router import router as youtube_router
 import betterlogging as bl
 
 
@@ -20,9 +24,14 @@ def setup_logging():
     logger.info("Starting server")
 
 
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    yield
+
+
 setup_logging()
 
-app = FastAPI(title="Parser App")
+app = FastAPI(title="YouTube App", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
@@ -33,7 +42,9 @@ app.add_middleware(
 )
 
 app.include_router(user_router)
+app.include_router(youtube_router)
+
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8010)
-    #uvicorn.run(src, host="localhost", port=8030)
+    #uvicorn.run(app, host="0.0.0.0", port=8010)
+    uvicorn.run(app, host="localhost", port=8030)

@@ -2,6 +2,8 @@ import styles from "./Main.module.scss";
 
 import { getData } from "../../app/api/getData";
 import MainPanel from "@widgets/ui/MainPanel/MainPanel";
+import VideoPlayer from "@widgets/ui/VideoPlayer/VideoPlayer";
+import VideoSidebar from "@widgets/ui/VideoSidebar/VideoSidebar";
 import { useEffect, useState } from "react";
 
 interface Person {
@@ -32,7 +34,12 @@ export default function Main() {
           </p>
         </div>
       ))} */}
-      <MainPanel />
+      <div className={styles.container}>
+        <MainPanel />
+        <VideoPlayer />
+      </div>
+
+      <VideoSidebar />
     </div>
   );
 }

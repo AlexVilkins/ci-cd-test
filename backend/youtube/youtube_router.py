@@ -1,8 +1,12 @@
+import logging
+
 import grpc
-from fastapi import APIRouter, WebSocket
+from fastapi import APIRouter, WebSocket, Request
+from fastapi.params import Depends
 from starlette.responses import HTMLResponse
 
 from grpc_utils.proto import bid_pb2_grpc, bid_pb2
+from youtube.schemas import ResponseAddUrl, ConstructURL
 
 html = """
 <!DOCTYPE html>
@@ -38,29 +42,29 @@ html = """
 </html>
 """
 
-
 router = APIRouter(
     prefix="/youtube",
     tags=["YouTube"]
 )
+
+
 @router.get("/")
 async def get():
     return HTMLResponse(html)
 
 
-@router.post("/data")
-async def post_data_url(user_id: str, url: str, type_mess: str):
-    async with grpc.aio.insecure_channel('localhost:50051') as channel:
-        stub = bid_pb2_grpc.MessageAddServiceStub(channel)
-        request = bid_pb2.MessageSendData(user_id=user_id,
-                                         url=url,
-                                         type_mess=type_mess)
-        response = await stub.SendMessage(request)  # Асинхронный вызов
-        print(f"Response from server: {response.text}")
-        print(f"Response from server: {response.type_mess}")
-
-
-
+@router.post("/add_url", response_model=ResponseAddUrl)
+async def add_to_query(request: Request, data: ConstructURL = Depends(ConstructURL), ):
+    client_host = request.client.host
+    print(client_host)
+    channel = grpc.aio.insecure_channel('localhost:50052')
+    stub = bid_pb2_grpc.MessageAddServiceStub(channel)
+    request = bid_pb2.MessageSendData(user_id=str(data.user_id),
+                                      url=data.url,
+                                      type_mess=data.type_mess)
+    response = await stub.SendMessage(request)  # Асинхронный вызов
+    position, img_url, description = response.text.split("`")
+    return ResponseAddUrl(img_url=img_url, position=position, description=description, user_id=data.user_id)
 
 
 @router.websocket("/ws_youtube")

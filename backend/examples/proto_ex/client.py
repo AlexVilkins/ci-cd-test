@@ -1,14 +1,14 @@
 import grpc
-from examples.proto_ex import ex_pb2_grpc, ex_pb2
+from grpc_utils.proto_ws import ws_pb2_grpc, ws_pb2
 import asyncio
 
-async def run():
-    async with grpc.aio.insecure_channel('localhost:50051') as channel:
-        stub = ex_pb2_grpc.MessageAddServiceStub(channel)
-        request = ex_pb2.MessageSendData(user_id="Hello, gRPC!")
-        print(f"send user_id=Hello, gRPC!")
-        response = await stub.SendMessage(request)  # Асинхронный вызов
-        print(f"Response from server: {response.text}")
+def run():
+    channel = grpc.insecure_channel(f'localhost:50053')
+    stub = ws_pb2_grpc.MessageWsServiceStub(channel)
+    response = stub.SendMessage(ws_pb2.MessageSendPyro(user_id="dsdfsf",
+                                                      text=f"sdsdffds",
+                                                      type_mess="video_info"))
+    print(response)
 
 if __name__ == '__main__':
-    asyncio.run(run())
+    run()

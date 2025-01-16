@@ -13,12 +13,13 @@ class ExampleServiceServicer(bid_pb2_grpc.MessageAddService):
         print(f"Received: {request.user_id} {request.url}, {request.type_mess}")
         url = request.url
         user_id = request.user_id
-        position = await self.queue.add_to_queue_from_browser(url=url, user_id=user_id)
-        if isinstance(position, int):
-            return bid_pb2.MessageFromPyro(text=f"{position}",
+        results = await self.queue.add_to_queue_from_browser(url=url, user_id=user_id)
+        if isinstance(results, tuple):
+            position, img_irl, description = results
+            return bid_pb2.MessageFromPyro(text=f"{position}`{img_irl}`{description}",
                                            type_mess=f"success")
         else:
-            return bid_pb2.MessageFromPyro(text=f"{position}",
+            return bid_pb2.MessageFromPyro(text=f"{results}",
                                            type_mess=f"error")
         print("res")
 

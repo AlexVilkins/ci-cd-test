@@ -11,6 +11,7 @@ class ConstructUser(BaseModel):
     city: Optional[str] = None
 
 
+
 class ResponseAllUsers(BaseModel):
     user_id: uuid.UUID
     name: str

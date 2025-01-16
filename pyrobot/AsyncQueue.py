@@ -23,11 +23,12 @@ class AsyncQueue:
 
     async def add_to_queue_from_browser(self, url=None, user_id=None):
         check_result = await self.check_video_from_browser(url=url)
-        if isinstance(check_result, bool):
+        if isinstance(check_result, tuple):
+            url_img, description = check_result
             position = self.queue.qsize() + 1
             await self.queue.put((None, url, user_id))
             print(f"Item added to queue")
-            return position
+            return position, url_img, description
         return check_result
 
     async def add_to_queue(self, client=None, message=None):
@@ -180,6 +181,8 @@ class AsyncQueue:
             with self.static_ydl as ydl:
                 info = ydl.extract_info(url, download=False)
                 video_duration = info.get('duration', None)
+                description = info.get('title')
+                img_url = info.get('thumbnail')
         except yt_dlp.utils.DownloadError as error:
             if "Unsupported URL" in error.msg:
                 return error.msg
@@ -193,4 +196,4 @@ class AsyncQueue:
         #                                                   tg_user_id=chat,
         #                                                   type_mess="repeat"))
         #         return "We are currently not loading videos for more than an hour"
-        return True
+        return img_url, description

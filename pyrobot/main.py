@@ -43,10 +43,6 @@ def dome2():
     loop.run_until_complete(start_grpc())
 
 
-# async def start_worker_and_grpc():
-#     await asyncio.gather(start_worker(),
-#                          start_grpc())
-
 
 async def start_worker():
     await queue.worker()

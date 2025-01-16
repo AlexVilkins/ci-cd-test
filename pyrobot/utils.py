@@ -3,6 +3,7 @@ from asyncio import get_event_loop
 import grpc
 from pyrogram import Client
 from grpc_utils.proto import message_pb2_grpc, message_pb2
+from grpc_utils.proto_ws import ws_pb2_grpc, ws_pb2
 
 
 class ProgressTracker:
@@ -15,21 +16,26 @@ class ProgressTracker:
         self.current_id = None
         self.channel_tg = grpc.insecure_channel(f'{container_tg}:50051')
         self.stub_tg = message_pb2_grpc.MessageServiceStub(self.channel_tg)
-        self.channel_fast = grpc.insecure_channel(f'{container_fast}:50052')
-        self.stub_fast = message_pb2_grpc.MessageServiceStub(self.channel_fast)
+        self.channel_fast = grpc.insecure_channel(f'{container_fast}:50053')
+        self.stub_fast = ws_pb2_grpc.MessageWsServiceStub(self.channel_fast)
 
     def set_cur_id(self, new_id):
         self.current_id = new_id
 
     def progress_hook(self, d):
+        pass
         if d['status'] == 'downloading':
             percent = d['downloaded_bytes'] / d['total_bytes'] * 100 if d['total_bytes'] else 0
-
             if percent - self.last_percent >= 5:
                 percent = round(percent)
-                self.stub_tg.SendMessage(message_pb2.Message(text=f"{percent}",
-                                                          tg_user_id=str(self.current_id),
-                                                          type_mess="progress"))
+                if len(str(self.current_id)) != 36:
+                    self.stub_tg.SendMessage(message_pb2.Message(text=f"{percent}",
+                                                                 tg_user_id=str(self.current_id),
+                                                                 type_mess="progress"))
+                else:
+                    self.stub_fast.SendMessage(ws_pb2.MessageSendPyro(user_id=str(self.current_id),
+                                                                    text=f"{percent}",
+                                                                    type_mess="progress"))
                 self.last_percent = percent
 
         elif d['status'] == 'finished':

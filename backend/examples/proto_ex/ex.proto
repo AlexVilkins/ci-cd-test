@@ -1,0 +1,14 @@
+syntax = "proto3";
+package ExPackage;
+
+message MessageSendData {
+  string user_id = 1;
+}
+
+message MessageFromPyro {
+  string text = 1;
+}
+
+service MessageAddService {
+  rpc SendMessage (MessageSendData) returns (MessageFromPyro) {}
+}

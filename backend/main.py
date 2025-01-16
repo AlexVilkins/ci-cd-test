@@ -6,7 +6,6 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from grpc_utils.client import ClientGrpc
 from user.user_router import router as user_router
 from youtube.youtube_router import router as youtube_router
 import betterlogging as bl

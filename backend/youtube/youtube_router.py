@@ -1,10 +1,8 @@
-import asyncio
-import uuid
-
+import grpc
 from fastapi import APIRouter, WebSocket
 from starlette.responses import HTMLResponse
 
-from grpc_utils.client import ClientGrpc
+from grpc_utils.proto import bid_pb2_grpc, bid_pb2
 
 html = """
 <!DOCTYPE html>
@@ -50,10 +48,25 @@ async def get():
     return HTMLResponse(html)
 
 
+@router.post("/data")
+async def post_data_url(user_id: str, url: str, type_mess: str):
+    async with grpc.aio.insecure_channel('localhost:50051') as channel:
+        stub = bid_pb2_grpc.MessageAddServiceStub(channel)
+        request = bid_pb2.MessageSendData(user_id=user_id,
+                                         url=url,
+                                         type_mess=type_mess)
+        response = await stub.SendMessage(request)  # Асинхронный вызов
+        print(f"Response from server: {response.text}")
+        print(f"Response from server: {response.type_mess}")
+
+
+
+
+
 @router.websocket("/ws_youtube")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     data = await websocket.receive_text()
-    async for response in ClientGrpc().start_stream(url=data, type_mess="sdad"):
-        await websocket.send_text(f"Message text was: {response.text}")
+
+    # await websocket.send_text(f"Message text was: {response.text}")
     await websocket.close()

@@ -28,7 +28,7 @@ class ProgressTracker:
             percent = d['downloaded_bytes'] / d['total_bytes'] * 100 if d['total_bytes'] else 0
             if percent - self.last_percent >= 5:
                 percent = round(percent)
-                if len(str(self.current_id)) != 36:
+                if str(self.current_id).count('.') != 3:
                     self.stub_tg.SendMessage(message_pb2.Message(text=f"{percent}",
                                                                  tg_user_id=str(self.current_id),
                                                                  type_mess="progress"))

@@ -56,15 +56,14 @@ async def get():
 @router.post("/add_url", response_model=ResponseAddUrl)
 async def add_to_query(request: Request, data: ConstructURL = Depends(ConstructURL), ):
     client_host = request.client.host
-    print(client_host)
     channel = grpc.aio.insecure_channel('localhost:50052')
     stub = bid_pb2_grpc.MessageAddServiceStub(channel)
-    request = bid_pb2.MessageSendData(user_id=str(data.user_id),
+    request = bid_pb2.MessageSendData(user_id=str(client_host),
                                       url=data.url,
-                                      type_mess=data.type_mess)
+                                      type_mess="some_mess")
     response = await stub.SendMessage(request)  # Асинхронный вызов
     position, img_url, description = response.text.split("`")
-    return ResponseAddUrl(img_url=img_url, position=position, description=description, user_id=data.user_id)
+    return ResponseAddUrl(img_url=img_url, position=position, description=description, user_id=str(client_host))
 
 
 @router.websocket("/ws_youtube")

@@ -2,7 +2,7 @@ import uuid
 
 from fastapi import APIRouter
 
-from router.schemas import ResponseAllUsers, ConstructUser
+from user.schemas import ResponseAllUsers, ConstructUser
 
 user_data = [
     {"user_id": uuid.uuid4(),

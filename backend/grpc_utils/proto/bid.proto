@@ -1,0 +1,16 @@
+syntax = "proto3";
+package BidPackage;
+
+message EntryCreateRequest {
+    string text = 1;
+    string type_mess = 2;
+}
+
+message EntryResponse {
+    string text = 1;
+    string type_mess = 2;
+}
+
+service BidService {
+    rpc createBulkEntries(stream EntryCreateRequest) returns (stream EntryResponse) {}
+}

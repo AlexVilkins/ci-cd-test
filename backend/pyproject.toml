@@ -7,9 +7,12 @@ authors = ["develophub <mixan_45@mail.ru>"]
 
 [tool.poetry.dependencies]
 python = "^3.12"
-uvicorn = "^0.34.0"
+uvicorn = {extras = ["standard"], version = "^0.34.0"}
 fastapi = "^0.115.6"
 betterlogging = "^1.0.0"
+websocket = "^0.2.1"
+grpcio = "^1.69.0"
+grpcio-tools = "^1.69.0"
 
 
 [build-system]

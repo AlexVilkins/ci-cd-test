@@ -4,6 +4,8 @@
 /pyrobot/teletoon_userbot.session
 /pyrobot/teletoon_userbot.session-journal
 /pyrobot/cookies.txt
+/backend/.idea
+/pyrobot/.idea
 /frontend/.env
 
 

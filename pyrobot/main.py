@@ -1,5 +1,7 @@
 import asyncio
 import threading
+import time
+from concurrent.futures import ThreadPoolExecutor
 
 import yt_dlp
 from pyrogram import Client, filters
@@ -34,19 +36,17 @@ queue = AsyncQueue(stub_tg=progress_tracker.stub_tg, stub_fast=progress_tracker.
                    static_ydl=static_ydl, progress_tracker=progress_tracker)
 
 
-def dome():
+def worker():
     loop = asyncio.new_event_loop()
     loop.run_until_complete(start_worker())
 
-def dome2():
+def worker_grpc():
     loop = asyncio.new_event_loop()
     loop.run_until_complete(start_grpc())
 
 
-
 async def start_worker():
     await queue.worker()
-
 
 async def start_grpc():
     await serve(queue=queue)
@@ -57,9 +57,17 @@ async def reply_with_video(client, message):
     print("get message")
     await queue.add_to_queue(client, message)
 
+async def start_pyro():
+    await app.start()
+    await asyncio.Event().wait()
 
-thread1 = threading.Thread(target=dome)
-thread2 = threading.Thread(target=dome2)
-thread1.start()
-thread2.start()
-app.run()
+
+def main():
+    with ThreadPoolExecutor() as executor:
+        _ = executor.submit(worker)
+        _ = executor.submit(worker_grpc)
+        app.run()
+
+if __name__ == "__main__":
+    asyncio.run(main())
+

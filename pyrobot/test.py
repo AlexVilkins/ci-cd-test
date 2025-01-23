@@ -1,38 +1,29 @@
+import redis.asyncio as redis
 import asyncio
 
-class AsyncQueue:
-    def __init__(self):
-        self.queue = asyncio.Queue()
-        self.lock = asyncio.Lock()
-
-    async def add(self, item):
-        async with self.lock:  # Гарантия последовательного добавления
-            await self.queue.put(item)
-            position = self.queue.qsize()  # Определяем позицию элемента
-        print(f"Элемент {item} добавлен в очередь. Его позиция: {position}")
-        return position
-
-    async def process(self):
-        while True:
-            item = await self.queue.get()
-            print(f"Обрабатываю элемент: {item}")
-            await asyncio.sleep(1)  # Симуляция обработки
-            self.queue.task_done()
 
 async def main():
-    async_queue = AsyncQueue()
+    # Подключение к Redis
+    redis_client = redis.Redis(
+        host='172.18.0.2',
+        port=6388,
+        password='passwd',
+        decode_responses=True  # Для работы со строками
+    )
 
-    # Добавление элементов в очередь
-    await async_queue.add("A")
-    asyncio.create_task(async_queue.process())
-    await async_queue.add("B")
-    await async_queue.add("C")
+    # Установка ключа
+    key = "my_key"
+    value = "my_value"
+    await redis_client.set(key, value)
+    print(f"Ключ '{key}' с значением '{value}' добавлен в Redis.")
 
-    # Обработка очереди
-    #asyncio.create_task(async_queue.process())
+    # Получение значения для проверки
+    result = await redis_client.get(key)
+    print(f"Значение ключа '{key}': {result}")
 
-    # Ждем завершения обработки всех элементов
-    await async_queue.queue.join()
+    # Закрытие соединения
+    await redis_client.aclose()
 
-# Запускаем asyncio-программу
+
+# Запуск асинхронного метода
 asyncio.run(main())

@@ -29,6 +29,5 @@ router = APIRouter(
 @router.post("/all", response_model=list[ResponseAllUsers])
 async def get_last_messages():
     res = [ConstructUser(**person) for person in user_data]
-
     return res
 

@@ -1,8 +1,4 @@
-import uuid
-from typing import Optional, Annotated
-
-from pydantic import BaseModel, Strict
-from pydantic.v1 import UUID4
+from pydantic import BaseModel
 
 
 class ConstructURL(BaseModel):

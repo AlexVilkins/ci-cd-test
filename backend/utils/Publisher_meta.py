@@ -1,7 +1,6 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
 from threading import Lock
-from fastapi import WebSocket
 
 
 class SingletonMeta(ABC.__class__):

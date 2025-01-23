@@ -1,8 +1,7 @@
 import logging
 
 from utils.Reporter import Reporter
-from utils.Publisher_meta import Subject, SingletonMeta, Observer
-from fastapi import WebSocket
+from utils.Publisher_meta import Subject, SingletonMeta
 
 
 class Publisher(Subject, metaclass=SingletonMeta):
@@ -26,7 +25,6 @@ class Publisher(Subject, metaclass=SingletonMeta):
             """
             if observer.user_id == user_id and observer.url == url:
                 await observer.update(self)
-
 
     async def start_pooling(self) -> None:
         logging.info("Start pooling")

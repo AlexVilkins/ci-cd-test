@@ -46,6 +46,5 @@ app.include_router(user_router)
 app.include_router(youtube_router)
 
 
-if __name__ == "__main__":
-    #uvicorn.run(app, host="0.0.0.0", port=8010)
-    uvicorn.run(app, host="localhost", port=8030)
+uvicorn.run(app, host="0.0.0.0", port=8010)
+#uvicorn.run(app, host="localhost", port=8030)

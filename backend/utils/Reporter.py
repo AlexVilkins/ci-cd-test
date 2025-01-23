@@ -2,7 +2,7 @@ import logging
 
 from fastapi import WebSocket
 
-from utils.Publisher_meta import Observer, SingletonMeta, Subject
+from utils.Publisher_meta import Observer, Subject
 
 
 class Reporter(Observer):

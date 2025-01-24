@@ -21,7 +21,7 @@ class ExampleServiceServicer(ws_pb2_grpc.MessageWsService):
 async def serve():
     server = grpc.aio.server()
     ws_pb2_grpc.add_MessageWsServiceServicer_to_server(ExampleServiceServicer(), server)
-    server.add_insecure_port('[::]:50053')
+    server.add_insecure_port('pyrobot:50053')
     await server.start()
     print("Server started on port 50053")
     await server.wait_for_termination()

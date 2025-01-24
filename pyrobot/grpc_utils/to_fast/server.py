@@ -28,7 +28,7 @@ class ExampleServiceServicer(bid_pb2_grpc.MessageAddService):
 async def serve(queue: AsyncQueue):
     server = grpc.aio.server()
     bid_pb2_grpc.add_MessageAddServiceServicer_to_server(ExampleServiceServicer(queue), server)
-    server.add_insecure_port('[::]:50052')
+    server.add_insecure_port('pyrobot:50052')
     await server.start()
     print("Server started on port 50052")
     await server.wait_for_termination()

@@ -6,7 +6,7 @@ import redis.asyncio as redis
 class RedisManager:
     def __init__(self):
         self.redis_client = redis.Redis(
-            host='172.18.0.2',
+            host='redis',
             port=6388,
             password='passwd',
             decode_responses=False

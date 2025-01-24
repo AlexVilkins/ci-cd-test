@@ -59,7 +59,7 @@ async def get():
 @router.post("/add_url", response_model=ResponseAddUrl)
 async def add_to_query(request: Request, data: ConstructURL = Depends(ConstructURL), ):
     client_host = request.client.host
-    channel = grpc.aio.insecure_channel('localhost:50052')
+    channel = grpc.aio.insecure_channel('pyrobot:50052')
     stub = bid_pb2_grpc.MessageAddServiceStub(channel)
     request = bid_pb2.MessageSendData(user_id=str(client_host),
                                       url=data.url,

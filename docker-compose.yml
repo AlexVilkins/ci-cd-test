@@ -68,6 +68,7 @@ services:
         max-file: "10"
 
   redis:
+    container_name: "redis"
     image: redis:6.2-alpine
     ports:
       - "6388:6388"

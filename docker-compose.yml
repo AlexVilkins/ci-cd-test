@@ -11,6 +11,7 @@ services:
       - VITE_APP_API_URL=http://192.168.0.75:8010
 
   backend:
+    container_name: "backend"
     stop_signal: SIGINT
     stdin_open: true
     build:
@@ -27,14 +28,15 @@ services:
         max-file: "10"
 
   nginx:
-    build: ./nginx
+    image: nginx:latest
+    container_name: nginx
     ports:
-      - 80:80
+      - "80:80"
     depends_on:
-      - frontend
       - backend
 
   pyrobot:
+    container_name: "pyrobot"
     build:
       context: pyrobot
       dockerfile: Dockerfile
@@ -42,7 +44,8 @@ services:
       sh -c "poetry run python3 -m main"
     restart: always
     links:
-      - aioyou
+      - backend
+      - redis
     logging:
       driver: "json-file"
       options:
@@ -63,3 +66,12 @@ services:
       options:
         max-size: "200k"
         max-file: "10"
+
+  redis:
+    image: redis:6.2-alpine
+    ports:
+      - "6388:6388"
+    restart: always
+    command: /bin/sh -c "redis-server --port $$REDISPORT --save 20 1 --loglevel warning --requirepass $$REDISPASSWORD"
+    env_file:
+      - .env

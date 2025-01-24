@@ -53,6 +53,7 @@ services:
         max-file: "10"
 
   aioyou:
+    container_name: "aioyou"
     build:
       context: aiogram_youtube
       dockerfile: Dockerfile

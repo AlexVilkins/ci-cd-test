@@ -26,7 +26,7 @@ html = """
         <ul id='messages'>
         </ul>
         <script>
-            var ws = new WebSocket("ws://192.168.0.75:8010/youtube/ws_youtube");
+            var ws = new WebSocket("ws://0.0.0.0:8010/youtube/ws_youtube");
             ws.onmessage = function(event) {
                 var messages = document.getElementById('messages')
                 var message = document.createElement('li')
@@ -99,7 +99,6 @@ async def websocket_endpoint(websocket: WebSocket):
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     host = websocket.client.host
-    print()
     logging.info(host)
     redis_pubsub = redis_connection.redis_client.pubsub()
     logging.info(f"Websocket")

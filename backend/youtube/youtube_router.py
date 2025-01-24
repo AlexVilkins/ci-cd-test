@@ -1,3 +1,4 @@
+import json
 import logging
 import pickle
 
@@ -25,7 +26,7 @@ html = """
         <ul id='messages'>
         </ul>
         <script>
-            var ws = new WebSocket("ws://localhost:8010/youtube/ws_youtube");
+            var ws = new WebSocket("ws://192.168.0.75:8010/youtube/ws_youtube");
             ws.onmessage = function(event) {
                 var messages = document.getElementById('messages')
                 var message = document.createElement('li')
@@ -80,9 +81,41 @@ async def websocket_endpoint(websocket: WebSocket):
             if message["type"] != 'subscribe':
                 data = pickle.loads(message["data"])
                 if data["type_mess"] == "video_download":
-                    await websocket.send_text(f"Тип {data["type_mess"]} текст: {data["text"]}")
+                    await websocket.send_json(json.dumps(data))
                     break
-                await websocket.send_text(f"Тип {data["type_mess"]} текст: {data["text"]}")
+                if data["type_mess"] == "progress":
+                    data["text"] = int(data["text"])
+                await websocket.send_json(json.dumps(data))
+    except WebSocketDisconnect:
+        logging.info("Клиент закрыл соединение")
+        await redis_pubsub.unsubscribe(host)
+    else:
+        await redis_pubsub.unsubscribe(host)
+        logging.info("Соединение закрылось самостоятельно")
+        await websocket.close()
+
+
+@router.websocket("/ws_youtube")
+async def websocket_endpoint(websocket: WebSocket):
+    await websocket.accept()
+    host = websocket.client.host
+    print()
+    logging.info(host)
+    redis_pubsub = redis_connection.redis_client.pubsub()
+    logging.info(f"Websocket")
+    try:
+        await redis_pubsub.subscribe(host)
+        async for message in redis_pubsub.listen():
+            if message["type"] != 'subscribe':
+                data = pickle.loads(message["data"])
+                if data["type_mess"] == "video_download":
+                    data["text"] = str(data["text"])
+                    print(data["text"])
+                    await websocket.send_json(json.dumps(data))
+                    break
+                if data["type_mess"] == "progress":
+                    data["text"] = int(data["text"])
+                await websocket.send_json(json.dumps(data))
     except WebSocketDisconnect:
         logging.info("Клиент закрыл соединение")
         await redis_pubsub.unsubscribe(host)

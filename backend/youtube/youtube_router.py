@@ -56,8 +56,12 @@ async def get():
     return HTMLResponse(html)
 
 
-@router.post("/add_url", response_model=ResponseAddUrl)
-async def add_to_query(request: Request, data: ConstructURL = Depends(ConstructURL), ):
+@router.post("/add_url",
+             response_model=ResponseAddUrl,
+             summary="Добавить URL видео",
+             description="Этот эндпоинт позволяет добавить URL видео YouTube в систему. "
+                         "Необходимо предоставить ссылку на видео через query параметр 'url'.")
+async def add_to_query(request: Request, data: ConstructURL = Depends(ConstructURL.as_query)):
     client_host = request.client.host
     channel = grpc.aio.insecure_channel('pyrobot:50052')
     stub = bid_pb2_grpc.MessageAddServiceStub(channel)

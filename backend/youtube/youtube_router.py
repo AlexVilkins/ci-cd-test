@@ -56,8 +56,12 @@ async def get():
     return HTMLResponse(html)
 
 
-@router.post("/add_url", response_model=ResponseAddUrl)
-async def add_to_query(request: Request, data: ConstructURL = Depends(ConstructURL), ):
+@router.post("/add_url",
+             response_model=ResponseAddUrl,
+             summary="Добавить URL видео",
+             description="Этот эндпоинт позволяет добавить URL видео YouTube в систему. "
+                         "Необходимо предоставить ссылку на видео через query параметр 'url'.")
+async def add_to_query(request: Request, data: ConstructURL = Depends(ConstructURL.as_query)):
     client_host = request.client.host
     channel = grpc.aio.insecure_channel('pyrobot:50052')
     stub = bid_pb2_grpc.MessageAddServiceStub(channel)
@@ -66,7 +70,7 @@ async def add_to_query(request: Request, data: ConstructURL = Depends(ConstructU
                                       type_mess="some_mess")
     response = await stub.SendMessage(request)
     position, img_url, description = response.text.split("`")
-    return ResponseAddUrl(img_url=img_url, position=position, description=description, user_id=str(client_host))
+    return ResponseAddUrl(img_url=img_url, position=int(position), description=description, user_id=str(client_host))
 
 
 @router.websocket("/ws_youtube")
@@ -81,11 +85,11 @@ async def websocket_endpoint(websocket: WebSocket):
             if message["type"] != 'subscribe':
                 data = pickle.loads(message["data"])
                 if data["type_mess"] == "video_download":
-                    await websocket.send_json(json.dumps(data))
+                    await websocket.send_json(data)
                     break
                 if data["type_mess"] == "progress":
                     data["text"] = int(data["text"])
-                await websocket.send_json(json.dumps(data))
+                await websocket.send_json(data)
     except WebSocketDisconnect:
         logging.info("Клиент закрыл соединение")
         await redis_pubsub.unsubscribe(host)

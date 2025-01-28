@@ -1,8 +1,9 @@
 interface UserState {
   img_url: string;
-  position: string;
+  position: number;
   description: string;
-  // path: string;
+  desableButton: boolean;
+  panelType: "none" | "img" | "video";
 }
 
 export default UserState;

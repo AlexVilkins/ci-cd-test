@@ -1,5 +1,7 @@
 {
   "img_url": "",
-  "position": "",
-  "description": ""
+  "position": 0,
+  "description": "",
+  "desableButton": false,
+  "panelType": "none"
 }

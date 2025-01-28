@@ -81,11 +81,11 @@ async def websocket_endpoint(websocket: WebSocket):
             if message["type"] != 'subscribe':
                 data = pickle.loads(message["data"])
                 if data["type_mess"] == "video_download":
-                    await websocket.send_json(json.dumps(data))
+                    await websocket.send_json(data)
                     break
                 if data["type_mess"] == "progress":
                     data["text"] = int(data["text"])
-                await websocket.send_json(json.dumps(data))
+                await websocket.send_json(data)
     except WebSocketDisconnect:
         logging.info("Клиент закрыл соединение")
         await redis_pubsub.unsubscribe(host)

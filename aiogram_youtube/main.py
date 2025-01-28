@@ -1,15 +1,14 @@
 import logging
 import asyncio
-import threading
 
 from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.memory import MemoryStorage
-from aiogram.types import BotCommandScopeAllPrivateChats, BotCommand, Message
+from aiogram.types import BotCommandScopeAllPrivateChats, BotCommand
 import betterlogging as bl
 
 from base_settings import base_settings
 from handlers.admin.admin_router import admin_main_router
-from serve import serve
+from aiogram_youtube.grpc_utils.serve import serve
 
 
 def get_storage():

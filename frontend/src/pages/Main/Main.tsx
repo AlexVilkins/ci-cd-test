@@ -21,7 +21,7 @@ export default function Main() {
       const response = await getData();
       setData(response);
     };
-    fetchData();
+    // fetchData();
   }, []);
 
   return (

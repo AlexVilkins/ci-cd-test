@@ -66,7 +66,7 @@ async def add_to_query(request: Request, data: ConstructURL = Depends(ConstructU
                                       type_mess="some_mess")
     response = await stub.SendMessage(request)
     position, img_url, description = response.text.split("`")
-    return ResponseAddUrl(img_url=img_url, position=position, description=description, user_id=str(client_host))
+    return ResponseAddUrl(img_url=img_url, position=int(position), description=description, user_id=str(client_host))
 
 
 @router.websocket("/ws_youtube")

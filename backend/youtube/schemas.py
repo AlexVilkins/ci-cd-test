@@ -9,7 +9,7 @@ class ConstructURL(BaseModel):
 
 class ResponseAddUrl(BaseModel):
     img_url: str = Field(strict=True)
-    position: str = Field(strict=True)
+    position: int = Field(strict=True)
     description: str = Field(strict=True)
     user_id: str = Field(strict=True)
 

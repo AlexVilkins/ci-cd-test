@@ -6,7 +6,7 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from grpc_utils.client import ClientGrpc
+from grpc_utils.proto_ws.server import serve
 from user.user_router import router as user_router
 from youtube.youtube_router import router as youtube_router
 import betterlogging as bl
@@ -26,6 +26,7 @@ def setup_logging():
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    task = asyncio.create_task(serve())
     yield
 
 
@@ -45,6 +46,5 @@ app.include_router(user_router)
 app.include_router(youtube_router)
 
 
-if __name__ == "__main__":
-    #uvicorn.run(app, host="0.0.0.0", port=8010)
-    uvicorn.run(app, host="localhost", port=8030)
+uvicorn.run(app, host="0.0.0.0", port=8010)
+#uvicorn.run(app, host="localhost", port=8030)

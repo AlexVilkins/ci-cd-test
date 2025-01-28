@@ -1,15 +1,12 @@
 syntax = "proto3";
-package BidPackage;
+package ExPackage;
 
 message MessageSendData {
   string user_id = 1;
-  string url = 2;
-  string type_mess = 3;
 }
 
 message MessageFromPyro {
   string text = 1;
-  string type_mess = 2;
 }
 
 service MessageAddService {

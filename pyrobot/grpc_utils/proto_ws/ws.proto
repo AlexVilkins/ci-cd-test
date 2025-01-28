@@ -1,0 +1,16 @@
+syntax = "proto3";
+package WsPackage;
+
+message MessageSendPyro {
+  string user_id = 1;
+  string text = 2;
+  string type_mess = 3;
+}
+
+message MessageFromBack {
+  string text = 1;
+}
+
+service MessageWsService {
+  rpc SendMessage (MessageSendPyro) returns (MessageFromBack) {}
+}

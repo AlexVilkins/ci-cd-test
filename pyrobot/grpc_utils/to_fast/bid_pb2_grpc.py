@@ -3,7 +3,7 @@
 import grpc
 import warnings
 
-from grpc_utils.proto import bid_pb2 as bid__pb2
+from grpc_utils.to_fast import bid_pb2 as bid__pb2
 
 GRPC_GENERATED_VERSION = '1.69.0'
 GRPC_VERSION = grpc.__version__

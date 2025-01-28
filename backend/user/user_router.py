@@ -1,8 +1,9 @@
 import uuid
+from typing import Any
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 
-from user.schemas import ResponseAllUsers, ConstructUser
+from user.schemas import ResponseAllUsers, ConstructUser, User, UserResponse
 
 user_data = [
     {"user_id": uuid.uuid4(),
@@ -29,6 +30,11 @@ router = APIRouter(
 @router.post("/all", response_model=list[ResponseAllUsers])
 async def get_last_messages():
     res = [ConstructUser(**person) for person in user_data]
-
     return res
+
+@router.post("/test")
+async def get_last_messages(data: User) -> Any:
+    d = data.model_dump()
+    d["some"] = "ssad"
+    return d
 

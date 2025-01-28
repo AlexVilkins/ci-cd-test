@@ -3,7 +3,7 @@
 import grpc
 import warnings
 
-from grpc_utils.proto import bid_pb2 as bid__pb2
+from grpc_utils.proto_ws import ws_pb2 as ws__pb2
 
 GRPC_GENERATED_VERSION = '1.69.0'
 GRPC_VERSION = grpc.__version__
@@ -18,14 +18,14 @@ except ImportError:
 if _version_not_supported:
     raise RuntimeError(
         f'The grpc package installed is at version {GRPC_VERSION},'
-        + f' but the generated code in bid_pb2_grpc.py depends on'
+        + f' but the generated code in ws_pb2_grpc.py depends on'
         + f' grpcio>={GRPC_GENERATED_VERSION}.'
         + f' Please upgrade your grpc module to grpcio>={GRPC_GENERATED_VERSION}'
         + f' or downgrade your generated code using grpcio-tools<={GRPC_VERSION}.'
     )
 
 
-class MessageAddServiceStub(object):
+class MessageWsServiceStub(object):
     """Missing associated documentation comment in .proto file."""
 
     def __init__(self, channel):
@@ -35,13 +35,13 @@ class MessageAddServiceStub(object):
             channel: A grpc.Channel.
         """
         self.SendMessage = channel.unary_unary(
-                '/BidPackage.MessageAddService/SendMessage',
-                request_serializer=bid__pb2.MessageSendData.SerializeToString,
-                response_deserializer=bid__pb2.MessageFromPyro.FromString,
+                '/WsPackage.MessageWsService/SendMessage',
+                request_serializer=ws__pb2.MessageSendPyro.SerializeToString,
+                response_deserializer=ws__pb2.MessageFromBack.FromString,
                 _registered_method=True)
 
 
-class MessageAddServiceServicer(object):
+class MessageWsServiceServicer(object):
     """Missing associated documentation comment in .proto file."""
 
     def SendMessage(self, request, context):
@@ -51,22 +51,22 @@ class MessageAddServiceServicer(object):
         raise NotImplementedError('Method not implemented!')
 
 
-def add_MessageAddServiceServicer_to_server(servicer, server):
+def add_MessageWsServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'SendMessage': grpc.unary_unary_rpc_method_handler(
                     servicer.SendMessage,
-                    request_deserializer=bid__pb2.MessageSendData.FromString,
-                    response_serializer=bid__pb2.MessageFromPyro.SerializeToString,
+                    request_deserializer=ws__pb2.MessageSendPyro.FromString,
+                    response_serializer=ws__pb2.MessageFromBack.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'BidPackage.MessageAddService', rpc_method_handlers)
+            'WsPackage.MessageWsService', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
-    server.add_registered_method_handlers('BidPackage.MessageAddService', rpc_method_handlers)
+    server.add_registered_method_handlers('WsPackage.MessageWsService', rpc_method_handlers)
 
 
  # This class is part of an EXPERIMENTAL API.
-class MessageAddService(object):
+class MessageWsService(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
@@ -83,9 +83,9 @@ class MessageAddService(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/BidPackage.MessageAddService/SendMessage',
-            bid__pb2.MessageSendData.SerializeToString,
-            bid__pb2.MessageFromPyro.FromString,
+            '/WsPackage.MessageWsService/SendMessage',
+            ws__pb2.MessageSendPyro.SerializeToString,
+            ws__pb2.MessageFromBack.FromString,
             options,
             channel_credentials,
             insecure,

@@ -35,7 +35,11 @@ class ResponseAddUrl(BaseModel):
         examples=["172.12.123.4"],
         description="IP адрес отправителя запроса",
     )
-    port: str = Field(strict=True)
+    port: str = Field(
+        strict=True,
+        examples=["34525"],
+        description="Порт IP адреса отправителя запроса",
+    )
 
     @field_validator("user_id")
     @classmethod

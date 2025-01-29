@@ -51,9 +51,9 @@ router = APIRouter(
 )
 
 
-@router.get("/")
-async def get():
-    return HTMLResponse(html)
+# @router.get("/")
+# async def get():
+#     return HTMLResponse(html)
 
 
 @router.post("/add_url",
@@ -87,7 +87,7 @@ async def websocket_endpoint(websocket: WebSocket):
                 if data["type_mess"] == "video_download":
                     await websocket.send_json(data)
                     break
-                if data["type_mess"] == "progress":
+                if data["type_mess"] == "progress" or data["type_mess"] == "queue_position" :
                     data["text"] = int(data["text"])
                 await websocket.send_json(data)
     except WebSocketDisconnect:

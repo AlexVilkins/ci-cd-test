@@ -5,10 +5,8 @@ from contextlib import asynccontextmanager
 import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
 
 from grpc_utils.proto_ws.server import serve
-from user.user_router import router as user_router
 from youtube.youtube_router import router as youtube_router
 import betterlogging as bl
 
@@ -43,7 +41,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-#app.include_router(user_router)
 app.include_router(youtube_router)
 
 

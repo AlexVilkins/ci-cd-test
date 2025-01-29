@@ -9,7 +9,7 @@ const VideoPlayer: React.FC = () => {
   // const [isPlaying, setIsPlaying] = useState<boolean>(false);
   // const [currentTime, setCurrentTime] = useState<number>(0);
 
-  const { img_url, position, description } = useAppSelector(
+  const { img_url, position, description, panelType } = useAppSelector(
     (state) => state.mainVideoSlice
   );
 
@@ -33,9 +33,13 @@ const VideoPlayer: React.FC = () => {
   return (
     <>
       <div className={styles.videoPlayer}>
-        {position === "" && <></>}
-        {position === "1" && <div>IMAGE</div>}
-        {position !== "" && position !== "1" && <div>VIDEO</div>}
+        {panelType === "none" && <></>}
+        {panelType === "img" && (
+          <div className={styles.img}>
+            <img src={img_url} alt="image" />
+          </div>
+        )}
+        {panelType === "video" && position !== "1" && <div>VIDEO</div>}
         {/* <video
           ref={url}
           width="1080"
@@ -49,7 +53,7 @@ const VideoPlayer: React.FC = () => {
           />
           Ваш браузер не поддерживает видео.
         </video> */}
-        <p>{description}</p>
+        <p className={styles.description}>{description}</p>
       </div>
     </>
   );

@@ -153,23 +153,23 @@ class AsyncQueue:
                 video_duration = info.get('duration', None)
         except yt_dlp.utils.DownloadError as error:
             if "Unsupported URL" in error.msg:
-                self.stub.SendMessage(message_pb2.Message(text=f"{error.msg}\n",
+                self.stub_tg.SendMessage(message_pb2.Message(text=f"{error.msg}\n",
                                                           tg_user_id=chat,
                                                           type_mess="repeat"))
                 return
-            self.stub.SendMessage(message_pb2.Message(text=f"Video quality is too low for 720p upload\n",
+            self.stub_tg.SendMessage(message_pb2.Message(text=f"Video quality is too low for 720p upload\n",
                                                       tg_user_id=chat,
                                                       type_mess="repeat"))
             return
         if video_duration > 3599:
-            self.stub.SendMessage(
+            self.stub_tg.SendMessage(
                 message_pb2.Message(text=f"We are currently not loading videos for more than an hour\n",
                                     tg_user_id=chat,
                                     type_mess="repeat"))
             return
         for item in self.queue._queue:
             if item[2] == chat:
-                self.stub.SendMessage(message_pb2.Message(text=f"One of your videos is already in the queue\n"
+                self.stub_tg.SendMessage(message_pb2.Message(text=f"One of your videos is already in the queue\n"
                                                                f"Please wait for loading",
                                                           tg_user_id=chat,
                                                           type_mess="repeat"))

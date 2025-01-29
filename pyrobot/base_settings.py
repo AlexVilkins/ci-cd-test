@@ -44,7 +44,7 @@ class Settings(BaseSettings):
             'progress_hooks': [],
             'quiet': True,
             "ffmpeg_location": "/usr/bin/ffmpeg",
-            "noprogress": False
+            "noprogress": True
         }
 
 

@@ -1,6 +1,7 @@
 import json
 import logging
 import pickle
+from urllib.parse import parse_qs
 
 import grpc
 from fastapi import APIRouter, WebSocket, Request, WebSocketDisconnect
@@ -26,7 +27,7 @@ html = """
         <ul id='messages'>
         </ul>
         <script>
-            var ws = new WebSocket("ws://0.0.0.0:8010/youtube/ws_youtube");
+            var ws = new WebSocket("ws://0.0.0.0:8010/youtube/ws_youtube/123");
             ws.onmessage = function(event) {
                 var messages = document.getElementById('messages')
                 var message = document.createElement('li')
@@ -51,10 +52,6 @@ router = APIRouter(
 )
 
 
-# @router.get("/")
-# async def get():
-#     return HTMLResponse(html)
-
 
 @router.post("/add_url",
              response_model=ResponseAddUrl,
@@ -65,20 +62,22 @@ async def add_to_query(request: Request, data: ConstructURL = Depends(ConstructU
     client_host = request.client.host
     channel = grpc.aio.insecure_channel('pyrobot:50052')
     stub = bid_pb2_grpc.MessageAddServiceStub(channel)
-    request = bid_pb2.MessageSendData(user_id=str(client_host),
+    request_grpc = bid_pb2.MessageSendData(user_id=str(client_host) + str(request.client.port),
                                       url=data.url,
                                       type_mess="some_mess")
-    response = await stub.SendMessage(request)
+    response = await stub.SendMessage(request_grpc)
     position, img_url, description = response.text.split("`")
-    return ResponseAddUrl(img_url=img_url, position=int(position), description=description, user_id=str(client_host))
+    return ResponseAddUrl(img_url=img_url, position=int(position),
+                          description=description, user_id=str(client_host) + str(request.client.port),
+                          port=str(request.client.port))
 
 
-@router.websocket("/ws_youtube")
-async def websocket_endpoint(websocket: WebSocket):
+@router.websocket("/ws_youtube/{port}")
+async def websocket_endpoint(websocket: WebSocket, port):
     await websocket.accept()
-    host = websocket.client.host
+    host = websocket.client.host + str(port)
     redis_pubsub = redis_connection.redis_client.pubsub()
-    logging.info(f"Websocket")
+    logging.info(f"Websocket {host}")
     try:
         await redis_pubsub.subscribe(host)
         async for message in redis_pubsub.listen():

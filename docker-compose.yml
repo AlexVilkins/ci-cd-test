@@ -1,14 +1,15 @@
 services:
   frontend:
+    container_name: "frontend"
     build:
       context: ./frontend
       dockerfile: Dockerfile
     ports:
-      - "5173:5173"
-    depends_on:
-      - backend
+      - "5173:80"
     environment:
       - VITE_APP_API_URL=http://192.168.0.75:8010
+    networks:
+      - my_network
 
   backend:
     container_name: "backend"
@@ -19,13 +20,19 @@ services:
     command: >
       sh -c "poetry run python3 -m main"
     ports:
-      - "8010:8010"
+      - "8000:8000"
     restart: always
+    depends_on:
+      - redis
+      - pyrobot
+      - frontend
     logging:
       driver: "json-file"
       options:
         max-size: "200k"
         max-file: "10"
+    networks:
+      - my_network
 
   nginx:
     image: nginx:latest
@@ -34,6 +41,8 @@ services:
       - "80:80"
     depends_on:
       - backend
+    networks:
+      - my_network
 
   pyrobot:
     container_name: "pyrobot"
@@ -43,14 +52,15 @@ services:
     command: >
       sh -c "poetry run python3 -m main"
     restart: always
-    links:
-      - backend
-      - redis
+    depends_on:
+      - aioyou
     logging:
       driver: "json-file"
       options:
         max-size: "200k"
         max-file: "10"
+    networks:
+      - my_network
 
   aioyou:
     container_name: "aioyou"
@@ -67,6 +77,8 @@ services:
       options:
         max-size: "200k"
         max-file: "10"
+    networks:
+      - my_network
 
   redis:
     container_name: "redis"
@@ -77,3 +89,9 @@ services:
     command: /bin/sh -c "redis-server --port $$REDISPORT --save 20 1 --loglevel warning --requirepass $$REDISPASSWORD"
     env_file:
       - .env
+    networks:
+      - my_network
+
+networks:
+  my_network:
+    driver: bridge

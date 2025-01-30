@@ -35,10 +35,15 @@ class ResponseAddUrl(BaseModel):
         examples=["172.12.123.4"],
         description="IP адрес отправителя запроса",
     )
+    port: str = Field(
+        strict=True,
+        examples=["34525"],
+        description="Порт IP адреса отправителя запроса",
+    )
 
     @field_validator("user_id")
     @classmethod
     def validate_user_id(cls, value: str) -> str:
-        if not re.match(r'^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$', value):
+        if not re.match(r'^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,8}$', value):
             raise ValueError("user_id must be in the format '123.12.123.12' with each number 1-3 digits.")
         return value

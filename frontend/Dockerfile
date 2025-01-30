@@ -15,7 +15,8 @@ COPY . .
 
 RUN npm run build
 
+EXPOSE 5173
+
 # Запускаем приложение в режиме разработки
 CMD ["npm", "run", "dev"]
 
-EXPOSE 5173

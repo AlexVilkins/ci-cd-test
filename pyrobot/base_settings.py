@@ -44,10 +44,10 @@ class Settings(BaseSettings):
             'progress_hooks': [],
             'quiet': True,
             "ffmpeg_location": "/usr/bin/ffmpeg",
-            "noprogress": False
+            "noprogress": True
         }
 
 
 
 
-base_settings = Settings(_env_file=".env_dev", _env_file_encoding="utf-8")
+base_settings = Settings(_env_file=".env", _env_file_encoding="utf-8")

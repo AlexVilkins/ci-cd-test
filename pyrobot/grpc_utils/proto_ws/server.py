@@ -8,7 +8,6 @@ import asyncio
 
 class ExampleServiceServicer(ws_pb2_grpc.MessageWsService):
     async def SendMessage(self, request, context):
-        user_id = request.user_id
         text = request.text
         type_mess = request.type_mess
         match type_mess:

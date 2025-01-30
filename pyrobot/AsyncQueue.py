@@ -59,8 +59,6 @@ class AsyncQueue:
                                                               text=f"{position + 1}",
                                                               type_mess="queue_position"))
 
-
-
     async def work(self, item):
         client, url, chat = item
         if client:
@@ -112,6 +110,8 @@ class AsyncQueue:
                 file_path = ydl.prepare_filename(info)
                 video_duration = info.get('duration', None)
                 img_url = info.get('thumbnail')
+                width = info.get('width')
+                height = info.get('height')
                 description = info.get('title')
                 self.stub_tg.SendMessage(message_pb2.Message(text=f"{url}`{img_url}`{description}",
                                                              tg_user_id=chat,
@@ -139,7 +139,11 @@ class AsyncQueue:
                                                      tg_user_id=chat,
                                                      type_mess="send_video"))
         await client.send_video(chat_id=self.bot_name, video=file_path,
-                                caption=f"Вот ваше видео!{self.static_reg}{chat}")
+                                caption=f"{width}"
+                                        f"{self.static_reg}{height}"
+                                        f"{self.static_reg}{video_duration}"
+                                        f"{self.static_reg}{description}"
+                                        f"{self.static_reg}{chat}")
         self.stub_tg.SendMessage(message_pb2.Message(text=f"{video_duration}",
                                                      tg_user_id=chat,
                                                      type_mess="video_delivered"))
@@ -154,12 +158,12 @@ class AsyncQueue:
         except yt_dlp.utils.DownloadError as error:
             if "Unsupported URL" in error.msg:
                 self.stub_tg.SendMessage(message_pb2.Message(text=f"{error.msg}\n",
-                                                          tg_user_id=chat,
-                                                          type_mess="repeat"))
+                                                             tg_user_id=chat,
+                                                             type_mess="repeat"))
                 return
             self.stub_tg.SendMessage(message_pb2.Message(text=f"Video quality is too low for 720p upload\n",
-                                                      tg_user_id=chat,
-                                                      type_mess="repeat"))
+                                                         tg_user_id=chat,
+                                                         type_mess="repeat"))
             return
         if video_duration > 3599:
             self.stub_tg.SendMessage(
@@ -170,9 +174,9 @@ class AsyncQueue:
         for item in self.queue._queue:
             if item[2] == chat:
                 self.stub_tg.SendMessage(message_pb2.Message(text=f"One of your videos is already in the queue\n"
-                                                               f"Please wait for loading",
-                                                          tg_user_id=chat,
-                                                          type_mess="repeat"))
+                                                                  f"Please wait for loading",
+                                                             tg_user_id=chat,
+                                                             type_mess="repeat"))
                 return
         return True
 
@@ -189,11 +193,4 @@ class AsyncQueue:
             return "Video quality is too low for 720p upload"
         if video_duration > 3599:
             return "We are currently not loading videos for more than an hour"
-        # for item in self.queue._queue:
-        #     if item[2] == chat:
-        #         self.stub.SendMessage(message_pb2.Message(text=f"One of your videos is already in the queue\n"
-        #                                                        f"Please wait for loading",
-        #                                                   tg_user_id=chat,
-        #                                                   type_mess="repeat"))
-        #         return "We are currently not loading videos for more than an hour"
         return img_url, description

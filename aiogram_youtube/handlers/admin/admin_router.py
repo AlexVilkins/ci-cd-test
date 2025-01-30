@@ -1,5 +1,4 @@
 import logging
-from pyexpat.errors import messages
 
 from aiogram import types, Router, F
 from aiogram.filters import CommandStart
@@ -21,9 +20,14 @@ async def user_start(message: types.Message):
 async def user_start(message: types.Message):
     try:
         if message.video:
-            mes, user_id = message.caption.split(static_reg)
-            await message.bot.send_video(chat_id=user_id, video=message.video.file_id)
-    except:
+            width, height, duration, descr, user_id = message.caption.split(static_reg)
+            await message.bot.send_video(chat_id=user_id, video=message.video.file_id,
+                                         duration=int(duration),
+                                         width=int(width),
+                                         height=int(height),
+                                         supports_streaming=True)
+    except Exception as e:
+        logging.error(f"{e}")
         await message.answer(text="Error, please send URL YouTube video")
 
 @admin_main_router.message()

@@ -15,9 +15,12 @@ const mainVideoSlice = createSlice({
     setButtonDesable(state, action: PayloadAction<UserState>) {
       state.desableButton = action.payload.desableButton;
     },
-    setDesableButton(state, action: PayloadAction<UserState>) {
-      state.desableButton = action.payload.desableButton;
-    }, // Контроль конопки
+    setPosition(state, action: PayloadAction<UserState>) {
+      state.position = action.payload.position;
+    },
+    dropeState() {
+      return initialState;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -26,7 +29,6 @@ const mainVideoSlice = createSlice({
         state.position = action.payload.position;
         state.description = action.payload.description;
         state.panelType = "img";
-        // state.desableButton = true;
       })
       .addCase(addUrlAsync.rejected, (state) => {
         state.img_url = "";
@@ -36,7 +38,6 @@ const mainVideoSlice = createSlice({
   },
 });
 
-// Экспортируем действия и редюсер
-export const { setPanelType, setButtonDesable, setDesableButton } =
+export const { setPanelType, setButtonDesable, dropeState, setPosition } =
   mainVideoSlice.actions;
 export default mainVideoSlice.reducer;

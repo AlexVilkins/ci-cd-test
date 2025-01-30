@@ -1,4 +1,7 @@
 import React from "react";
+
+import { useAppSelector } from "@app/redux/store";
+
 import styles from "./Button.module.scss";
 
 interface InputProps {
@@ -6,8 +9,14 @@ interface InputProps {
 }
 
 const Button: React.FC<InputProps> = ({ onClick }) => {
+  const { desableButton } = useAppSelector((state) => state.mainVideoSlice);
+
   return (
-    <button className={styles.button} onClick={() => onClick()}>
+    <button
+      className={styles.button}
+      disabled={desableButton}
+      onClick={() => onClick()}
+    >
       Поиск
     </button>
   );

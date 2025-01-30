@@ -1,4 +1,6 @@
-import { useAppSelector } from "@app/redux/store"; // Замените на путь к вашим хукам
+import { useAppSelector } from "@app/redux/store";
+
+import Loading from "@shared/ui/Loading/Loading";
 
 import styles from "./VideoPlayer.module.scss";
 
@@ -34,12 +36,13 @@ const VideoPlayer: React.FC = () => {
     <>
       <div className={styles.videoPlayer}>
         {panelType === "none" && <></>}
+        {panelType === "loading" && <Loading />}
         {panelType === "img" && (
           <div className={styles.img}>
             <img src={img_url} alt="image" />
           </div>
         )}
-        {panelType === "video" && position !== "1" && <div>VIDEO</div>}
+        {panelType === "video" && <div>VIDEO</div>}
         {/* <video
           ref={url}
           width="1080"

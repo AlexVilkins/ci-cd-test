@@ -6,6 +6,7 @@ import LoadingBar from "@shared/ui/LoadingBar/LoadingBar";
 import { useAppDispatch } from "@app/redux/store";
 import { isValidYouTubeUrl } from "@feature/hooks/isValidYouTubeUrl";
 import { addUrlAsync } from "@app/redux/mainVideo/asyncAction";
+import { UserState } from "@app/redux/mainVideo/slice";
 import {
   setPanelType,
   setButtonDesable,
@@ -22,7 +23,7 @@ const MainPanel: React.FC = () => {
   const dispatch = useAppDispatch();
 
   const { panelType, position } = useAppSelector(
-    (state) => state.mainVideoSlice
+    (state: UserState) => state.mainVideoSlice
   );
 
   useEffect(() => {

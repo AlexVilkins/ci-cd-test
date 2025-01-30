@@ -3,6 +3,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import initialState from "./initialState.json";
 import UserState from "./type";
 import { addUrlAsync } from "./asyncAction";
+// import { RootState } from "../store";
 
 const mainVideoSlice = createSlice({
   name: "mainVideo",
@@ -40,4 +41,7 @@ const mainVideoSlice = createSlice({
 
 export const { setPanelType, setButtonDesable, dropeState, setPosition } =
   mainVideoSlice.actions;
+
+// export const selectCount = (state: RootState) => state.mainVideoSlice.value;
+
 export default mainVideoSlice.reducer;

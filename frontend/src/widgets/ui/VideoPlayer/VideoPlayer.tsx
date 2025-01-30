@@ -1,6 +1,8 @@
-import { useAppSelector } from "@app/redux/store";
+import React from "react";
 
+import { useAppSelector } from "@app/redux/store";
 import Loading from "@shared/ui/Loading/Loading";
+import { UserState } from "@app/redux/mainVideo/slice";
 
 import styles from "./VideoPlayer.module.scss";
 
@@ -11,8 +13,8 @@ const VideoPlayer: React.FC = () => {
   // const [isPlaying, setIsPlaying] = useState<boolean>(false);
   // const [currentTime, setCurrentTime] = useState<number>(0);
 
-  const { img_url, position, description, panelType } = useAppSelector(
-    (state) => state.mainVideoSlice
+  const { img_url, description, panelType } = useAppSelector(
+    (state: UserState) => state.mainVideoSlice
   );
 
   // const togglePlayPause = () => {

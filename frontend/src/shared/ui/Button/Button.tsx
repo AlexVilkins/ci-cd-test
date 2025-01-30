@@ -1,7 +1,6 @@
 import React from "react";
 
-import { useAppSelector } from "@app/redux/store";
-import { UserState } from "@app/redux/mainVideo/slice";
+import { useAppSelector } from "@app/redux/hooks";
 
 import styles from "./Button.module.scss";
 
@@ -10,9 +9,7 @@ interface InputProps {
 }
 
 const Button: React.FC<InputProps> = ({ onClick }) => {
-  const { desableButton } = useAppSelector(
-    (state: UserState) => state.mainVideoSlice
-  );
+  const { desableButton } = useAppSelector((state: boolean) => state);
 
   return (
     <button

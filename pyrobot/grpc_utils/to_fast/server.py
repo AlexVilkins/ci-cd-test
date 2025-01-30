@@ -21,7 +21,6 @@ class ExampleServiceServicer(bid_pb2_grpc.MessageAddService):
         else:
             return bid_pb2.MessageFromPyro(text=f"{results}",
                                            type_mess=f"error")
-        print("res")
 
 
 

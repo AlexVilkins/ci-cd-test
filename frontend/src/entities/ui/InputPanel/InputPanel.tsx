@@ -5,7 +5,12 @@ import Button from "@shared/ui/Button/Button";
 
 import styles from "./InputPanel.module.scss";
 
-const InputPanel: React.FC<Button> = ({
+interface ButtonProps {
+  handleButtonClick: () => void;
+  handleInputChange: (value: string) => void;
+}
+
+const InputPanel: React.FC<ButtonProps> = ({
   handleButtonClick,
   handleInputChange,
 }) => {

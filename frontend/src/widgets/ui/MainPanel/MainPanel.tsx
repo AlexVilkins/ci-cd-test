@@ -1,19 +1,18 @@
 import React, { useState, useEffect, useRef } from "react";
 
-import styles from "./MainPanel.module.scss";
 import InputPanel from "@entities/ui/InputPanel/InputPanel";
 import LoadingBar from "@shared/ui/LoadingBar/LoadingBar";
-import { useAppDispatch } from "@app/redux/store";
+import { useAppDispatch, useAppSelector } from "@app/redux/hooks";
 import { isValidYouTubeUrl } from "@feature/hooks/isValidYouTubeUrl";
 import { addUrlAsync } from "@app/redux/mainVideo/asyncAction";
-import { UserState } from "@app/redux/mainVideo/slice";
 import {
   setPanelType,
   setButtonDesable,
   dropeState,
   setPosition,
 } from "@app/redux/mainVideo/slice";
-import { useAppSelector } from "@app/redux/store";
+
+import styles from "./MainPanel.module.scss";
 
 const MainPanel: React.FC = () => {
   const [progress, setProgress] = useState(0);
@@ -23,7 +22,7 @@ const MainPanel: React.FC = () => {
   const dispatch = useAppDispatch();
 
   const { panelType, position } = useAppSelector(
-    (state: UserState) => state.mainVideoSlice
+    (state: { panelType: string; position: number }) => state
   );
 
   useEffect(() => {

@@ -1,7 +1,11 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
+import path from "path";
+// import { fileURLToPath } from "url";
 
-// https://vite.dev/config/
+// const __filename = fileURLToPath(import.meta.url);
+// const __dirname = path.dirname(__filename);
+
 export default defineConfig({
   plugins: [react()],
   server: {
@@ -10,16 +14,16 @@ export default defineConfig({
     },
     host: true,
     strictPort: true,
-    port: 5173,
+    port: 3000,
   },
   resolve: {
     alias: {
-      "@app": "/src/app",
-      "@pages": "/src/pages",
-      "@feature": "/src/feature",
-      "@widgets": "/src/widgets",
-      "@entities": "/src/entities",
-      "@shared": "/src/shared",
+      "@app": path.resolve(__dirname, "src/app"),
+      "@pages": path.resolve(__dirname, "src/pages"),
+      "@feature": path.resolve(__dirname, "src/feature"),
+      "@widgets": path.resolve(__dirname, "src/widgets"),
+      "@entities": path.resolve(__dirname, "src/entities"),
+      "@shared": path.resolve(__dirname, "src/shared"),
     },
   },
 });

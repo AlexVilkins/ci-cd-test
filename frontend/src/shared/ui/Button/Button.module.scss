@@ -13,8 +13,13 @@
     // border: none;
   }
 
-  &:active {
-    background-color: #ffbf00;
+  // &:active {
+  //   background-color: #ffbf00;
+  // }
+
+  &:disabled {
+    background-color: #ffcc00;
+    opacity: 0.5;
   }
 
   //   &:hover {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React from "react";
 
 import Input from "@shared/ui/Input/Input";
 import Button from "@shared/ui/Button/Button";

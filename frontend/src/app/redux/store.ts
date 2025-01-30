@@ -1,16 +1,19 @@
 // src/app/store.ts
-import { useDispatch, useSelector, TypedUseSelectorHook } from "react-redux";
 
 import { configureStore } from "@reduxjs/toolkit";
 import mainVideoSlice from "./mainVideo/slice";
 
-const store = configureStore({
+export const store = configureStore({
   reducer: {
     mainVideoSlice,
   },
 });
 
-export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
-export const useAppDispatch = () => useDispatch<AppDispatch>();
+export type AppStore = typeof store;
+export type RootState = ReturnType<AppStore["getState"]>;
+export type AppDispatch = AppStore["dispatch"];
 
-export default store;
+// export const useAppDispatch = useDispatch.withTypes<AppDispatch>();
+// export const useAppSelector = useSelector.withTypes<RootState>();
+
+// export default store;

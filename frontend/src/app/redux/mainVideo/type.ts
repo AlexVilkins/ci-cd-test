@@ -3,7 +3,7 @@ interface UserState {
   position: number;
   description: string;
   desableButton: boolean;
-  panelType: "none" | "img" | "video";
+  panelType: "none" | "loading" | "img" | "video";
 }
 
 export default UserState;

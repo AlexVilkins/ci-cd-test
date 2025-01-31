@@ -1,8 +1,10 @@
 import logging
+import aiohttp
 
 from aiogram import types, Router, F
 from aiogram.filters import CommandStart
 import validators
+from aiogram.types import BufferedInputFile
 
 from base_settings import base_settings
 
@@ -10,6 +12,12 @@ admin_main_router = Router()
 user_bot_id = base_settings.get_user_bot_id()
 static_reg = "regxstate"
 static_status = "progress"
+
+async def download_thumbnail(url):
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as response:
+            image_data = await response.read()
+            return BufferedInputFile(image_data, filename="thumbnail.jpg")
 
 @admin_main_router.message(CommandStart())
 async def user_start(message: types.Message):
@@ -20,9 +28,11 @@ async def user_start(message: types.Message):
 async def user_start(message: types.Message):
     try:
         if message.video:
-            width, height, duration, descr, user_id = message.caption.split(static_reg)
+            preview, width, height, duration, descr, user_id = message.caption.split(static_reg)
+            #thumbnail = await download_thumbnail(preview)
             await message.bot.send_video(chat_id=user_id, video=message.video.file_id,
                                          duration=int(duration),
+                                         #thumbnail=thumbnail,
                                          width=int(width),
                                          height=int(height),
                                          supports_streaming=True)

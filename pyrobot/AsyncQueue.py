@@ -139,11 +139,15 @@ class AsyncQueue:
                                                      tg_user_id=chat,
                                                      type_mess="send_video"))
         await client.send_video(chat_id=self.bot_name, video=file_path,
-                                caption=f"{width}"
+                                caption=f"{img_url}"
+                                        f"{self.static_reg}{width}"
                                         f"{self.static_reg}{height}"
                                         f"{self.static_reg}{video_duration}"
                                         f"{self.static_reg}{description}"
-                                        f"{self.static_reg}{chat}")
+                                        f"{self.static_reg}{chat}",
+                                duration=int(video_duration),
+                                width=int(width),
+                                height=int(height))
         self.stub_tg.SendMessage(message_pb2.Message(text=f"{video_duration}",
                                                      tg_user_id=chat,
                                                      type_mess="video_delivered"))

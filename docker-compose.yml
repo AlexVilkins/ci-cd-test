@@ -4,10 +4,6 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    ports:
-      - "3000:3000"
-    # environment:
-    #   - VITE_APP_API_URL=http://192.168.0.75:8000
     networks:
       - my_network
 
@@ -41,6 +37,8 @@ services:
       - "80:80"
     depends_on:
       - backend
+    volumes:
+      - './nginx/nginx.conf:/etc/nginx/nginx.conf'
     networks:
       - my_network
 

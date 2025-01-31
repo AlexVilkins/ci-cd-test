@@ -5,7 +5,7 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     volumes:
-      - shared-volume:/usr/src/app/front_media
+      - shared-volume:/usr/src/app/media
     networks:
       - my_network
 

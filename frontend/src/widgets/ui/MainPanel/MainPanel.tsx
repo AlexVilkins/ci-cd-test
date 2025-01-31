@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 
 import InputPanel from "@entities/ui/InputPanel/InputPanel";
 import LoadingBar from "@shared/ui/LoadingBar/LoadingBar";
+import { RootState } from "@app/redux/store";
 import { useAppDispatch, useAppSelector } from "@app/redux/hooks";
 import { isValidYouTubeUrl } from "@feature/hooks/isValidYouTubeUrl";
 import { addUrlAsync } from "@app/redux/mainVideo/asyncAction";
@@ -22,7 +23,7 @@ const MainPanel: React.FC = () => {
   const dispatch = useAppDispatch();
 
   const { panelType, position } = useAppSelector(
-    (state: { panelType: string; position: number }) => state
+    (state: typeof RootState) => state.mainVideoSlice
   );
 
   useEffect(() => {

@@ -4,6 +4,7 @@ import { useAppSelector } from "@app/redux/hooks";
 import Loading from "@shared/ui/Loading/Loading";
 
 import styles from "./VideoPlayer.module.scss";
+import { RootState } from "@app/redux/store";
 
 // import React, { useRef, useState } from "react";
 
@@ -13,12 +14,10 @@ const VideoPlayer: React.FC = () => {
   // const [currentTime, setCurrentTime] = useState<number>(0);
 
   const { img_url, description, panelType } = useAppSelector(
-    (state: {
-      img_url: string;
-      description: string;
-      panelType: "none" | "loading" | "img" | "video";
-    }) => state
+    (state: typeof RootState) => state.mainVideoSlice
   );
+
+  console.log("Sdddd", img_url, description, panelType);
 
   // const togglePlayPause = () => {
   //   if (videoRef.current) {

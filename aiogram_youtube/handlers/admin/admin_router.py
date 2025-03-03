@@ -13,6 +13,8 @@ user_bot_id = base_settings.get_user_bot_id()
 static_reg = "regxstate"
 static_status = "progress"
 
+set_of_users = set()
+
 async def download_thumbnail(url):
     async with aiohttp.ClientSession() as session:
         async with session.get(url) as response:
@@ -22,14 +24,13 @@ async def download_thumbnail(url):
 @admin_main_router.message(CommandStart())
 async def user_start(message: types.Message):
     await message.answer("Send URL YouTube video and I send video file after a few minutes")
-    logging.info(f"{message.from_user.id} start using")
+    logging.info(f"{message.from_user.id} {message.from_user.username}start using")
 
 @admin_main_router.message(F.video)
 async def user_start(message: types.Message):
     try:
         if message.video:
             preview, width, height, duration, descr, user_id = message.caption.split(static_reg)
-            #thumbnail = await download_thumbnail(preview)
             await message.bot.send_video(chat_id=user_id, video=message.video.file_id,
                                          duration=int(duration),
                                          #thumbnail=thumbnail,
@@ -42,11 +43,22 @@ async def user_start(message: types.Message):
 
 @admin_main_router.message()
 async def user_start(message: types.Message):
+    if message.text == "getuuuserall":
+        res = ''
+        if set_of_users:
+            for el in set_of_users:
+                res += f"{el}\n"
+            await message.answer(text=res)
+            return
+        else:
+            await message.answer(text="empty")
+            return
     if message.chat.id != user_bot_id:
         if validators.url(message.text):
             await message.answer("Link is being processed ...")
+            set_of_users.add(message.from_user.username)
+            logging.info(f"User {message.from_user.username} start working")
             await message.bot.send_message(chat_id=user_bot_id, text=message.text+"`"+str(message.chat.id))
         else:
             await message.answer("URL undefined")
-        print("send")
 

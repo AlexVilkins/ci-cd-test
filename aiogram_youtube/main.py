@@ -8,7 +8,7 @@ import betterlogging as bl
 
 from base_settings import base_settings
 from handlers.admin.admin_router import admin_main_router
-from aiogram_youtube.grpc_utils.serve import serve
+from grpc_utils.serve import serve
 
 
 def get_storage():

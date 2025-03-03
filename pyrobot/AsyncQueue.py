@@ -2,6 +2,7 @@ import asyncio
 import os
 import uuid
 from asyncio import Queue
+from loguru import logger
 
 import yt_dlp.utils
 
@@ -21,16 +22,6 @@ class AsyncQueue:
         self.static_reg = base_settings.get_reg()
         self.bot_name = base_settings.get_bot_name()
 
-    async def add_to_queue_from_browser(self, url=None, user_id=None):
-        check_result = await self.check_video_from_browser(url=url)
-        if isinstance(check_result, tuple):
-            url_img, description = check_result
-            position = self.queue.qsize() + 1
-            await self.queue.put((None, url, user_id))
-            print(f"Item added to queue")
-            return position, url_img, description
-        return check_result
-
     async def add_to_queue(self, client=None, message=None):
         url, chat = message.text.split("`")
         if await self.check_video(chat=chat, url=url):
@@ -40,10 +31,10 @@ class AsyncQueue:
                                                              tg_user_id=chat,
                                                              type_mess="position"))
             await self.queue.put((client, url, chat))
-            print(f"Item added to queue")
+            logger.info(f"Item added to queue {chat} length {self.queue.qsize()}")
 
     async def worker(self):
-        print("worker start")
+        logger.info("Worker start")
         while True:
             if not self.queue.empty():
                 item = self.queue._queue[0]
@@ -60,49 +51,10 @@ class AsyncQueue:
                                                               type_mess="queue_position"))
 
     async def work(self, item):
-        client, url, chat = item
-        if client:
-            await self.tg_work(*item)
-        else:
-            await self.browser_work(*item)
-
-    async def browser_work(self, client, url, chat):
-        print(f"Start working browser on {chat}")
-
-        self.progress_tracker.set_cur_id(chat)
-        try:
-            with self.static_ydl as ydl:
-                info = ydl.extract_info(url, download=False)
-                file_path = ydl.prepare_filename(info)
-                video_duration = info.get('duration', None)
-                img_url = info.get('thumbnail')
-                description = info.get('title')
-                self.stub_fast.SendMessage(ws_pb2.MessageSendPyro(user_id=chat,
-                                                                  text=f"{img_url}`{description}",
-                                                                  type_mess="video_info"))
-                ydl.download(url)
-        except Exception as e:
-            print(e)
-            self.stub_fast.SendMessage(ws_pb2.MessageSendPyro(user_id=chat,
-                                                              text="Loading error",
-                                                              type_mess="error_load"))
-            return
-        try:
-            with open(file_path, "rb") as _:
-                pass
-        except FileNotFoundError:
-            self.stub_fast.SendMessage(ws_pb2.MessageSendPyro(user_id=chat,
-                                                              text=f"Sever side error\n",
-                                                              type_mess="error_server"))
-            return
-        self.stub_fast.SendMessage(ws_pb2.MessageSendPyro(user_id=chat,
-                                                          text=f"{file_path}",
-                                                          type_mess="video_download"))
-        os.remove(file_path)
-        print(f"End working on {chat}")
+        await self.tg_work(*item)
 
     async def tg_work(self, client, url, chat):
-        print(f"Start working tg on chat{chat}")
+        logger.info(f"Start working tg on {chat}")
         self.progress_tracker.set_cur_id(chat)
         try:
             with self.static_ydl as ydl:
@@ -118,23 +70,10 @@ class AsyncQueue:
                                                              type_mess="url"))
                 ydl.download(url)
         except:
-            try:
-                ydl.download(url)
-            except:
                 self.stub_tg.SendMessage(message_pb2.Message(text=f"Loading error",
                                                              tg_user_id=chat,
                                                              type_mess="error_load"))
                 return
-            return
-        try:
-            with open(file_path, "rb") as _:
-                pass
-        except FileNotFoundError:
-            self.stub_tg.SendMessage(message_pb2.Message(text=f"Sever side error\n"
-                                                              f"Please try later",
-                                                         tg_user_id=chat,
-                                                         type_mess="error_server"))
-            return
         self.stub_tg.SendMessage(message_pb2.Message(text=f"{video_duration}",
                                                      tg_user_id=chat,
                                                      type_mess="send_video"))
@@ -152,7 +91,7 @@ class AsyncQueue:
                                                      tg_user_id=chat,
                                                      type_mess="video_delivered"))
         os.remove(file_path)
-        print(f"End working on {chat}")
+        logger.info(f"End working tg on {chat}")
 
     async def check_video(self, chat, url):
         try:
@@ -195,6 +134,6 @@ class AsyncQueue:
             if "Unsupported URL" in error.msg:
                 return error.msg
             return "Video quality is too low for 720p upload"
-        if video_duration > 3599:
+        if video_duration > 7199:
             return "We are currently not loading videos for more than an hour"
         return img_url, description

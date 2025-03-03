@@ -2,6 +2,7 @@ import asyncio
 import threading
 import time
 from concurrent.futures import ThreadPoolExecutor
+from loguru import logger
 
 import yt_dlp
 from pyrogram import Client, filters
@@ -40,21 +41,14 @@ def worker():
     loop = asyncio.new_event_loop()
     loop.run_until_complete(start_worker())
 
-def worker_grpc():
-    loop = asyncio.new_event_loop()
-    loop.run_until_complete(start_grpc())
-
-
 async def start_worker():
     await queue.worker()
-
-async def start_grpc():
-    await serve(queue=queue)
 
 
 @app.on_message(filters.chat(bot_name))
 async def reply_with_video(client, message):
-    print("get message")
+    logger.info("get message")
+    pass
     await queue.add_to_queue(client, message)
 
 async def start_pyro():
@@ -65,7 +59,6 @@ async def start_pyro():
 def main():
     with ThreadPoolExecutor() as executor:
         _ = executor.submit(worker)
-        _ = executor.submit(worker_grpc)
         app.run()
 
 if __name__ == "__main__":
